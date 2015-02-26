@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{{ static_url('css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript">
+        function switch_nav(nav_url, nav_index) {
+            $('.nav .dropdown').each(function(i){
+                if (i == nav_index) {
+                    $('.nav .dropdown').eq(i).addClass('active');
+                } else {
+                    $('.nav .dropdown').eq(i).removeClass('active');
+                }
+            });
+            $('#frame').attr('src', nav_url);
+        }
+    </script>
+</head>
+<body>
+     <div class="header">
+            <ul class="nav nav-tabs">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">发布
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                        <li><a href="javascript:void(0)" onclick="switch_nav('/page?action=history', 0)">历史</a></li>
+                        <li><a href="javascript:void(0)" onclick="switch_nav('/page?action=publish', 0)">发布</a></li>
+                    </ul>
+                </li>
+                <li class="active dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">关于
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                        <li><a href="javascript:void(0)" onclick="switch_nav('/page?action=about', 1)">关于</a></li>
+                    </ul>
+                </li>
+                <li class="pull-right"><a href="/page?action=logout" target="_top"><b>{{ manager_name }}</b>&nbsp;Log out</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            <iframe id="frame" width="100%" height="2000" frameborder="0" src="/page?action=about" name="frame" scrolling="yes"></iframe>
+        </div>
+        <div class="footer">
+        </div>
+</body>
+</html>

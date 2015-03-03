@@ -15,7 +15,7 @@ class Session(object):
     _webRequestHandler  = None
 
     def __init__(self, webRequestHandler):
-        self._sessionDataHandler = webRequestHandler.application.get_redis_server()
+        self._sessionDataHandler = webRequestHandler.application.get_redis()
         self._webApplication     = webRequestHandler.application
         self._webRequestHandler  = webRequestHandler
 
@@ -31,12 +31,12 @@ class Session(object):
             sessionID = self._webRequestHandler.get_secure_cookie(self._sessionName, None)
             if sessionID is not None:
                 flag = sessionID.split('-')[1] if sessionID.count('-') else None
-                if flag is None or flag != Tools.md5(self._webRequestHandler.request.remote_ip + self._webApplication.settings.get('cookie_secret', '')):
+                if flag is None or flag != Tools.g_md5(self._webRequestHandler.request.remote_ip + self._webApplication.settings.get('cookie_secret', '')):
                     LOG.warn('session %s invalid' % sessionID)
                     sessionID = None
 
             if sessionID is None:
-                sessionID = '%s-%s' % (str(uuid.uuid4()).split('-')[0], Tools.md5(self._webRequestHandler.request.remote_ip + self._webApplication.settings.get('cookie_secret', '')), )
+                sessionID = '%s-%s' % (str(uuid.uuid4()).split('-')[0], Tools.g_md5(self._webRequestHandler.request.remote_ip + self._webApplication.settings.get('cookie_secret', '')), )
                 self._webRequestHandler.set_secure_cookie(self._sessionName, sessionID, expires_days = 1, httponly = True)
                 LOG.info('gen session id %s %s' % (self._webRequestHandler.request.remote_ip, sessionID,))
 

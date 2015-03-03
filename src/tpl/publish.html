@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>publish</title>
+    <link href="{{ static_url('css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ static_url('js/app.common.js') }}"></script>
+    <script type="application/javascript">
+        $(function(){
+            App.init({% raw pub_data %}).run();
+        });
+    </script>
+</head>
+<body class="alert">
+    <div class="header">
+        <fieldset>
+            <legend>Config Version</legend>
+            <input type="text" id="zip_config_version" value="" placeholder="" style="width:200px;height:25px;line-height:25px;font-size:15px;font-weight:bold;"/>
+        </fieldset>
+        <fieldset>
+            <legend>Game Version</legend>
+            <input type="text" id="zip_game_version" value="" placeholder="" style="width:200px;height:25px;line-height:25px;font-size:15px;font-weight:bold;"/>
+        </fieldset>
+        <fieldset>
+            <legend>Description</legend>
+            <input type="text" id="zip_desc" value="" placeholder="" style="width:500px;height:50px;line-height:50px;font-size:20px;font-weight:bold;"/>
+        </fieldset>
+        <div id="servers" style="display:none;">
+            <fieldset>
+            <legend>Servers</legend>
+            <div id="servers_op" style="padding:10px;">
+
+            </div>
+            </fieldset>
+        </div>
+        <hr>
+        <button class="btn btn-info" id="btn-zip">To zip</button>
+        <button class="btn" id="btn-syc" disabled>To rsync</button>
+        <button class="btn" id="btn-pub" disabled>To publish</button>
+    </div>
+    <div class="content">
+        <hr>
+        <div id="pub_result" style="color:darkgreen;">
+
+        </div>
+    </div>
+</body>
+</html>

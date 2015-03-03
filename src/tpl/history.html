@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>publish</title>
+    <link href="{{ static_url('css/bootstrap.min.css') }}" rel="stylesheet" media="screen">
+</head>
+<body class="alert">
+    <div class="header">
+        <h4>History</h4>
+    </div>
+    <div class="content">
+        {% if len(pub_list) > 0 %}
+        <table class="table table-hover">
+            <thead style="color:cadetblue;">
+                <tr>
+                    <th>vid</th>
+                    <th>config version</th>
+                    <th>game version</th>
+                    <th>desc</th>
+                    <th>target servers</th>
+                    <th>status</th>
+                    <th>pub time</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody style="color:#000000;">
+                {% for pub_item in pub_list %}
+                <tr>
+                    <td>{{ pub_item['pub_node_id'] }}</td>
+                    <td>{{ pub_item['config_version'] }}</td>
+                    <td>{{ pub_item['game_version'] }}</td>
+                    <td>{{ pub_item['description'] }}</td>
+                    <td>{{ pub_item['servers'] }}</td>
+                    <td>{{ pub_item['status'] }}</td>
+                    <td>{{ pub_item['pub_time'] }}</td>
+                    <td>
+                        {% if pub_item['status'] != 'pub_success' %}
+                        <a href="/page?action=publish&id={{ pub_item['id'] }}" class="btn btn-info">publish</a>
+                        {% end %}
+                    </td>
+                </tr>
+                {% end %}
+            </tbody>
+        </table>
+        {% end %}
+    </div>
+</body>
+</html>

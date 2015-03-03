@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-import time
 import logging
 
 import BaseHandler
 
+import Tools
 
 LOG = logging.getLogger(__name__)
 
@@ -15,7 +15,7 @@ class LoginHandler(BaseHandler.BaseHandler):
 
     def get(self):
         if self.session.get('name') is not None:
-            self.redirect('/page?action=index')
+            self.redirect('/')
         else:
             self.render('login.html')
 
@@ -25,5 +25,5 @@ class LoginHandler(BaseHandler.BaseHandler):
         LOG.info('login page post %s-%s' % (username, password,))
 
         if username == 'admin' and password == 'todo':
-            self.session.init({'name':username,'time':time.time()})
+            self.session.init({'name':username,'time':Tools.g_time()})
             self.redirect('/')

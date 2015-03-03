@@ -1,10 +1,14 @@
+
+import time
 import hashlib
 
-def md5(value):
+def g_md5(value):
     m = hashlib.md5()
     m.update(value)
     return m.hexdigest()
 
+def g_time():
+    return int(time.time())
 
 if __name__ == '__main__':
-    print md5('123456')
+    print g_md5('123456')

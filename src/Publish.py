@@ -53,15 +53,14 @@ class Publish(object):
         @self._zookeeper.ChildrenWatch('%s/server_list' % (self._root_node, ))
         def server(server_list):
             for server_node in server_list:
-                if self._server_list.get(server_node, None) is None:
-                    result = self.init_server(server_node)
-                    LOG.info('refresh server list %s' % json.dumps(result))
+                result = self.init_server(server_node)
+                LOG.info('refresh server list %s' % json.dumps(result))
 
         return self
 
     def init_server(self, server_node):
         server_detail = self._zookeeper.get('%s/server_list/%s' % (self._root_node, server_node, ))
-        if len(server_detail[0]) == 0:
+        if 0 == len(server_detail[0]):
             self._server_list[server_node] = {'server_id' : 0, 'server_name':'', 'create_time':0, 'versions':{}}
         else:
             self._server_list[server_node] = json.loads(server_detail[0])
@@ -175,13 +174,13 @@ class Publish(object):
 
                 syc_detail = json.loads(syc_result[0])
                 if isinstance(syc_detail, dict) == False or \
-                                syc_detail.get('create_time', None) is None:
+                                syc_detail.get('create_time', None) is None or \
+                                syc_detail.get('status', None) is None:
                     continue
 
-                already_finished_syc_server_list[server_node] = syc_result
-                self._server_list[server_node]['versions'][pub_node_id] = True
-
-                LOG.info('server list %s' % json.dumps(self._server_list))
+                if syc_detail['status'] == 'ok':
+                    already_finished_syc_server_list[server_node]           = syc_result
+                    self._server_list[server_node]['versions'][pub_node_id] = True
 
                 for callback in self._to_syc_node[pub_node_id]:
                     if hasattr(callback[0], '__call__') \
@@ -270,13 +269,13 @@ class Publish(object):
 
                 pub_detail = json.loads(pub_result[0])
                 if isinstance(pub_detail, dict) == False or \
-                                pub_detail.get('create_time', None) is None:
+                                pub_detail.get('create_time', None) is None or \
+                                pub_detail.get('status', None) is None:
                     continue
 
-                already_finished_pub_server_list[server_node]           = pub_detail
-                self._server_list[server_node]['versions'][pub_node_id] = True
-
-                LOG.info('server list %s' % json.dumps(self._server_list))
+                if pub_detail['status'] == 'ok':
+                    already_finished_pub_server_list[server_node]           = pub_detail
+                    self._server_list[server_node]['versions'][pub_node_id] = True
 
                 for callback in self._to_pub_node[pub_node_id]:
                     if hasattr(callback[0], '__call__') \

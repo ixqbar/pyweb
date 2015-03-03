@@ -344,6 +344,9 @@ App.executeResponse = function(response) {
         case 'syc':
             $('#pub_result').append('<h5> · start sync</h5>');
             break;
+        case 'syc_failed':
+            $('#pub_result').append('<h5> · server ' + response.server + ' sync failed</h5>');
+            break;
         case 'syc_process':
             $('#pub_result').append('<h5> · server ' + response.server + ' sync finished</h5>');
             break;

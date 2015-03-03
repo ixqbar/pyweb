@@ -20,7 +20,7 @@ snapshoot
 
 ##Step 2 同步
 ```
-{node}/to_syc_notice/v1    {"create_time":x,"pub_id":x,"pub_node_id":x}
+{node}/to_syc_notice/v1    {"create_time":x,"pub_id":x,"pub_node_id":x,"config_version":x,"game_version":x,"servers":[x,x,...]}
 {node}/to_syc_result/v1/s1 {"create_time":x,"status":"ok"}
 ...
 {node}/to_syc_result/v1/sN {"create_time":x,"status":"ok"}
@@ -29,7 +29,7 @@ snapshoot
 
 ##Step 3 发布
 ```
-{node}/to_pub_notice/v1    {"create_time":x,"pub_id":x,"pub_node_id":x, "servers":[x,x]}
+{node}/to_pub_notice/v1    {"create_time":x,"pub_id":x,"pub_node_id":x, "servers":[x,x,...]}
 {node}/to_pub_result/v1/s1 {"create_time":x,"status":"ok"}
 ...
 {node}/to_pub_result/v1/sN {"create_time":x,"status":"ok"}
@@ -38,7 +38,7 @@ snapshoot
 
 ##Step 4 回滚
 ```
-{node}/to_rol_notice/v1    {"create_time":x,"pub_id":x,"pub_node_id":x, "servers":[x,x]}
+{node}/to_rol_notice/v1    {"create_time":x,"pub_id":x,"pub_node_id":x, "servers":[x,x,...]}
 {node}/to_rol_result/v1/s1 {"create_time":x,"status":"ok"}
 ...
 {node}/to_rol_result/v1/sN {"create_time":x,"status":"ok"}

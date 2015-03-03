@@ -22,7 +22,6 @@ LOG = logging.getLogger(__name__)
 class mock_zip(object):
 
     _root_node = ''
-    _zip_node  = {}
     _zookeeper = None
 
     def __init__(self, host = '127.0.0.1', port = 2181, root_node = '/test'):
@@ -31,7 +30,9 @@ class mock_zip(object):
 
     def run(self):
         self._zookeeper.start()
+        self.init()
 
+    def init(self):
         zip_node = '%s/to_zip_notice' % self._root_node
         default_node_value = json.dumps({'create_time' : time.time()})
 
@@ -44,16 +45,10 @@ class mock_zip(object):
         @self._zookeeper.ChildrenWatch('%s/to_zip_notice' % (self._root_node, ))
         def to_zip_node(zip_node_list):
             for zip_node_id in zip_node_list:
-                node_value = self._zookeeper.get('%s/%s' % (zip_node, zip_node_id, ))
-                if isinstance(node_value, tuple) is False or \
-                        len(node_value) <= 1 \
-                        or len(node_value[0]) == 0:
-                    continue
-
-                LOG.info('watch_zip children %s/to_zip_notice/%s %s' % (self._root_node, zip_node_id, node_value[0], ))
-
-                self._zip_node[zip_node_id] = json.loads(node_value[0])
+                LOG.info('watch_zip children %s/to_zip_notice/%s' % (self._root_node, zip_node_id, ))
                 self.to_zip(zip_node_id)
+
+        return self
 
     def to_zip(self, zip_node_id):
 

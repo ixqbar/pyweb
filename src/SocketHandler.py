@@ -133,7 +133,11 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
         def syc_process(server_id, syc_response):
             LOG.info('server %s syc finished %s' % (server_id, syc_response, ))
-            return self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'syc_process', 'server' : server_id}, executor)
+            syc_result = json.loads(syc_response)
+            if syc_result.get('status', None) == 'ok':
+                self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'syc_process', 'server' : server_id}, executor)
+            else:
+                self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'syc_failed', 'server' : server_id}, executor)
 
         def syc_success():
             LOG.info('syc success')
@@ -143,7 +147,12 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
             }, {'$set' : {R.pub_status : 'syc_success'}})
             return self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'syc_success'}, executor)
 
-        self._publish.to_syc(pub_id, target_servers, syc_process, syc_success)
+        ext_data = {
+            'config_version' : str(pub_col_data[R.pub_config_version]),
+            'game_version'   : str(pub_col_data[R.pub_game_version])
+        }
+
+        self._publish.to_syc(pub_id, target_servers, syc_process, syc_success, **ext_data)
 
     def to_pub(self, pub_id, target_servers, executor):
         pub_col_data = self._mongo_col.find_one({R.mongo_id : int(pub_id)})
@@ -165,4 +174,9 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
             }, {'$set' : {R.pub_status : 'pub_success'}})
             return self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'pub_success'}, executor)
 
-        self._publish.to_pub(pub_id, target_servers, pub_process, pub_success)
+        ext_data = {
+            'config_version' : str(pub_col_data[R.pub_config_version]),
+            'game_version'   : str(pub_col_data[R.pub_game_version])
+        }
+
+        self._publish.to_pub(pub_id, target_servers, pub_process, pub_success, **ext_data)

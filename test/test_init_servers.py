@@ -38,7 +38,7 @@ if __name__ == '__main__':
     os.environ['TZ'] = 'Asia/Shanghai'
     time.tzset()
 
-    if len(sys.argv) > 2:
-        test_init_servers(sys.argv[1], int(sys.argv[2]))
+    if len(sys.argv) >= 2:
+        test_init_servers(int(sys.argv[1]))
     else:
         print 'You must usage like %s num' % (sys.argv[0], )

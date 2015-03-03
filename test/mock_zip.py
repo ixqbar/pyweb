@@ -59,8 +59,10 @@ class mock_zip(object):
 
         @self._zookeeper.DataWatch('%s/to_zip_notice/%s' % (self._root_node, zip_node_id, ))
         def to_zip_execute(data, stat, event):
-            if event is None \
-                    or event.type == 'DELETED':
+            if event is not None and event.type == 'DELETED':
+                return
+
+            if 0 == len(data):
                 return
 
             LOG.info('watch_zip execute %s/to_zip_notice/%s %s' % (self._root_node, zip_node_id, data, ))

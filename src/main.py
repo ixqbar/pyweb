@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import time
 import logging
 
@@ -16,6 +17,13 @@ import PageHandler
 import IndexHandler
 import LoginHandler
 import SocketHandler
+
+logging.basicConfig(
+    level   = logging.INFO,
+    stream  = sys.stdout,
+    datefmt = "%Y-%m-%d %H:%M:%S",
+    format  = "[%(levelname)s %(asctime)s %(filename)s %(lineno)s] %(message)s"
+)
 
 LOG = logging.getLogger(__name__)
 

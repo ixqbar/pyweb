@@ -331,6 +331,9 @@ App.executeResponse = function(response) {
         case 'zip':
             $('#pub_result').append('<h5> · start zip (pub id=' + response.pub_id + ')</h5>');
             break;
+        case 'zip_failed':
+            $('#pub_result').append('<h5> · zip failed</h5>');
+            break;
         case 'zip_success':
             $('#pub_result').append('<h5> · zip finished</h5>');
             $('#btn-zip').text('Finished zip');

@@ -99,17 +99,24 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
         self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'zip'}, executor)
 
-        def zip_success(zip_response):
-            LOG.info('zip success %s' % zip_response)
+        def zip_callback(zip_response):
+            LOG.info('zip return %s' % zip_response)
             zip_result = json.loads(zip_response)
             if zip_result.get('status', None) == 'ok':
                 self._mongo_col.update({
                     R.mongo_id   : int(pub_id),
                     R.pub_status : 'zip'
                 }, {'$set' : {R.pub_status : 'zip_success'}})
-            return self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'zip_success'}, executor)
+                self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'zip_success'}, executor)
+            else:
+                self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'zip_failed'}, executor)
 
-        self._publish.to_zip(pub_id, zip_success)
+        ext_data = {
+            'config_version' : str(config_version),
+            'game_version'   : str(game_version)
+        }
+
+        self._publish.to_zip(pub_id, zip_callback, **ext_data)
 
 
     def to_syc(self, pub_id, target_servers, executor):

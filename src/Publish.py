@@ -74,7 +74,7 @@ class Publish(object):
     def get_server_list(self):
         return self._server_list
 
-    def to_zip(self, pub_id, zip_success_callback = None, **ext_data):
+    def to_zip(self, pub_id, zip_callback = None, **ext_data):
         pub_node_id = self.get_pub_node_id(pub_id)
 
         ext_data['pub_id']      = pub_id
@@ -84,18 +84,22 @@ class Publish(object):
         try:
             if self._zookeeper.exists(self._root_node + '/to_zip_notice/' + pub_node_id) is None:
                 self._zookeeper.create(self._root_node + '/to_zip_notice/' + pub_node_id, json.dumps(ext_data), makepath = True)
+            else:
+                self._zookeeper.set(self._root_node + '/to_zip_notice/' + pub_node_id, json.dumps(ext_data))
 
             if self._zookeeper.exists(self._root_node + '/to_zip_result/' + pub_node_id) is None:
-                self._zookeeper.create(self._root_node + '/to_zip_result/' + pub_node_id, '{}', makepath = True)
+                self._zookeeper.create(self._root_node + '/to_zip_result/' + pub_node_id, '', makepath = True)
+            else:
+                self._zookeeper.set(self._root_node + '/to_zip_result/' + pub_node_id, '')
+
         except kazoo.exceptions.NodeExistsError:
             pass
 
-
         if self._to_zip_node.get(pub_node_id, None) is None:
-            self._to_zip_node[pub_node_id] = [zip_success_callback]
+            self._to_zip_node[pub_node_id] = [zip_callback]
             self.zip_notice(pub_id, pub_node_id)
         else:
-            self._to_zip_node[pub_node_id].append(zip_success_callback)
+            self._to_zip_node[pub_node_id].append(zip_callback)
 
         return self
 
@@ -103,18 +107,19 @@ class Publish(object):
 
         @self._zookeeper.DataWatch('%s/to_zip_result/%s' % (self._root_node, pub_node_id, ))
         def to_zip_notice(data, stat, event):
-            if event is None \
+            if 0 == len(data) or \
+                    event is None \
                     or event.type == 'CREATED' \
                     or event.type == 'DELETED':
                 return
 
-            LOG.info('%s/to_zip_result/%s changed %s' % (self._root_node, pub_id, data, ))
+            LOG.info('%s/to_zip_result/%s changed %s' % (self._root_node, pub_node_id, data, ))
 
-            for zip_success_callback in self._to_zip_node[pub_node_id]:
-                if hasattr(zip_success_callback, '__call__') \
-                        or isinstance(zip_success_callback, types.FunctionType):
-                    zip_success_callback(data)
-                del self._to_zip_node[pub_node_id]
+            for zip_callback in self._to_zip_node[pub_node_id]:
+                if hasattr(zip_callback, '__call__') \
+                        or isinstance(zip_callback, types.FunctionType):
+                    zip_callback(data)
+                self._to_zip_node[pub_node_id] = []
 
         return self
 
@@ -202,7 +207,7 @@ class Publish(object):
                     if self._server_list[server_node]['versions'].get(pub_node_id, None) is not None:
                         del(self._server_list[server_node]['versions'][pub_node_id])
 
-                del(self._to_syc_node[pub_node_id])
+                self._to_syc_node[pub_node_id] = []
 
                 already_finished_syc_server_list.clear()
 
@@ -297,7 +302,7 @@ class Publish(object):
                     if self._server_list[server_node]['versions'].get(pub_node_id, None) is not None:
                         del(self._server_list[server_node]['versions'][pub_node_id])
 
-                del(self._to_pub_node[pub_node_id])
+                self._to_pub_node[pub_node_id] = []
 
                 already_finished_pub_server_list.clear()
 

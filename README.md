@@ -14,7 +14,7 @@ snapshoot
 
 ##Step 1 打包
 ```
-{node}/to_zip_notice/v1  {"create_time":x}
+{node}/to_zip_notice/v1  {"create_time":x,"pub_id":x,"pub_node_id":x,"config_version":x,"game_version":x}
 {node}/to_zip_result/v1  {"create_time":x,"status":"ok"}
 ```
 

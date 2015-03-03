@@ -1,11 +1,7 @@
 # pyweb
-a simple web framework that use tornado
+a simple game publish tool framework that use tornado and websocket
 
 snapshoot
-
-![](./snapshoot/pyweb_1.png)
-
-![](./snapshoot/pyweb_2.png)
 
 ![](./snapshoot/pub.gif)
 

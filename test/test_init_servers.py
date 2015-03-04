@@ -28,7 +28,6 @@ def test_init_servers(num, host = '127.0.0.1', port = 2181):
                     'create_time' : time.time(),
                     'server_name' : 's%s' % v,
                     'server_id'   : v,
-                    'versions'    : {}
                 }), makepath = True)
         except kazoo.exceptions.NodeExistsError:
             pass

@@ -43,6 +43,12 @@
                 {% end %}
             </tbody>
         </table>
+        {% if prev or next %}
+			<ul class="pager">
+				{% if next %}<li class="next"><a href="/page?action=history&page={{ page + 1 }}">next page</a></li>{% end %}
+                {% if prev %}<li class="next"><a href="/page?action=history&page={{ page - 1 }}">last page</a></li>{% end %}
+			</ul>
+		{% end %}
         {% end %}
     </div>
 </body>

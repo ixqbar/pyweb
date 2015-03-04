@@ -2,7 +2,6 @@
 
 import time
 import json
-import math
 import logging
 
 import BaseHandler
@@ -63,26 +62,28 @@ class PageHandler(BaseHandler.BaseHandler):
 
     def history(self):
         page_val = {
-            'page'       : self.get_argument('page', 1),
+            'page'       : int(self.get_argument('page', 1)),
             'total_page' : 0,
             'total'      : 0,
-            'prev'       : 0,
-            'next'       : 0,
+            'prev'       : False,
+            'next'       : False,
             'pub_list'   : []
         }
 
-        page_num = 50
+        page_num = 20
         skip_num = (page_val['page'] - 1) * page_num if page_val['page'] >= 1 else 1
 
         mongo_col_cursor = self.application.get_mongo().get().use_collection(R.collection_publish).find()
 
         page_val['total']      = mongo_col_cursor.count()
-        page_val['total_page'] = math.ceil(page_val['total'] / page_num)
+        page_val['total_page'] = page_val['total'] / page_num if page_val['total'] % page_num == 0 else 1 + page_val['total'] / page_num
+        page_val['prev']       = True if page_val['page'] > 1 else False
+        page_val['next']       = True if page_val['page'] < page_val['total_page'] else False
 
         mongo_col_cursor.batch_size(page_num)
         mongo_col_cursor.limit(page_val['page'] * page_num)
 
-        for mongo_col_data in mongo_col_cursor[skip_num:]:
+        for mongo_col_data in mongo_col_cursor[skip_num:skip_num + page_num]:
             page_val['pub_list'].append({
                 'id'             : mongo_col_data[R.mongo_id],
                 'pub_node_id'    : 'v%s' % mongo_col_data[R.mongo_id],

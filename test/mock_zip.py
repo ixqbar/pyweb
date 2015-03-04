@@ -70,7 +70,8 @@ class mock_zip(object):
 
             if self.zip_execute(node_detail['config_version'], node_detail['game_version']) is True:
                 LOG.info('zip node %s/to_zip_notice/%s zip success' % (self._root_node, zip_node_id, ))
-                node_detail['status'] = 'ok'
+                node_detail['status']      = 'ok'
+                node_detail['finish_time'] = time.time()
                 self._zookeeper.set('%s/to_zip_notice/%s' % (self._root_node, zip_node_id, ), json.dumps(node_detail))
                 self._zookeeper.set('%s/to_zip_result/%s' % (self._root_node, zip_node_id, ), json.dumps({
                     'create_time' : time.time(),

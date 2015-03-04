@@ -101,7 +101,7 @@ App.loadServers = function() {
 App.loadServersExecutor = function(servers) {
     this.debug(servers);
     this.servers = servers;
-    var _html = ['<input type="checkbox" id="servers_all" value="" /> ALL<br/>'];
+    var _html = ['<input type="checkbox" id="servers_all" value="0" /> ALL<br/>'];
     for (var i in servers) {
         if ($.inArray(servers[i].server_id + '', this.pub_data.pub_servers) >= 0) {
             _html.push('<input type="checkbox" value="' + servers[i].server_id + '" checked/>' + servers[i].server_name)
@@ -241,7 +241,9 @@ App.sycBind = function() {
 
         _this.pub_data.pub_servers.length = []
         $("input[type='checkbox']:checked").each(function() {
-            _this.pub_data.pub_servers.push($(this).val());
+            if (parseInt($(this).val()) > 0) {
+                _this.pub_data.pub_servers.push($(this).val());
+            }
         });
 
         _this.debug(_this.pub_data.pub_servers);
@@ -303,7 +305,7 @@ App.sycExecute = function () {
         'action' : 'to_syc',
         'params' : {
             'pub_id'  : this.pub_data.pub_id,
-            'servers' : this.pub_data.pub_servers.join(',')
+            'servers' : this.pub_data.pub_servers.sort().join(',')
         },
         'callback' : 'executeResponse'
     });
@@ -314,7 +316,7 @@ App.pubExecute = function () {
         'action' : 'to_pub',
         'params' : {
             'pub_id'  : this.pub_data.pub_id,
-            'servers' : this.pub_data.pub_servers.join(',')
+            'servers' : this.pub_data.pub_servers.sort().join(',')
         },
         'callback' : 'executeResponse'
     });
@@ -332,7 +334,7 @@ App.executeResponse = function(response) {
             $('#pub_result').append('<h5> · start zip (pub id=' + response.pub_id + ')</h5>');
             break;
         case 'zip_failed':
-            $('#pub_result').append('<h5> · zip failed</h5>');
+            $('#pub_result').append('<h5 style="color:red;"> · zip failed</h5>');
             break;
         case 'zip_success':
             $('#pub_result').append('<h5> · zip finished</h5>');
@@ -345,7 +347,7 @@ App.executeResponse = function(response) {
             $('#pub_result').append('<h5> · start sync</h5>');
             break;
         case 'syc_failed':
-            $('#pub_result').append('<h5> · server ' + response.server + ' sync failed</h5>');
+            $('#pub_result').append('<h5 style="color:red;"> · server ' + response.server + ' sync failed</h5>');
             break;
         case 'syc_process':
             $('#pub_result').append('<h5> · server ' + response.server + ' sync finished</h5>');
@@ -357,6 +359,9 @@ App.executeResponse = function(response) {
             break;
         case 'pub':
             $('#pub_result').append('<h5> · start pub</h5>');
+            break;
+        case 'pub_failed':
+            $('#pub_result').append('<h5 style="color:red;"> · server ' + response.server + ' pub failed</h5>');
             break;
         case 'pub_process':
             $('#pub_result').append('<h5> · server ' + response.server + ' pub finished</h5>');

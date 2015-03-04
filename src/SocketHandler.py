@@ -162,9 +162,13 @@ class SocketHandler(tornado.websocket.WebSocketHandler):
 
         self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'pub'}, executor)
 
-        def pub_process(server_id, syc_response):
-            LOG.info('server %s pub finished %s' % (server_id, syc_response, ))
-            return self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'pub_process', 'server' : server_id}, executor)
+        def pub_process(server_id, pub_response):
+            LOG.info('server %s pub finished %s' % (server_id, pub_response, ))
+            pub_result = json.loads(pub_response)
+            if pub_result.get('status', None) == 'ok':
+                self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'pub_process', 'server' : server_id}, executor)
+            else:
+                self.client_response({'code' : 'ok', 'pub_id' : pub_id, 'status' : 'pub_failed', 'server' : server_id}, executor)
 
         def pub_success():
             LOG.info('syc success')

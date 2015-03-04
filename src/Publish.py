@@ -70,7 +70,12 @@ class Publish(object):
         return 'v%s' % pub_id
 
     def get_server_list(self):
-        return self._server_list
+        server_list = []
+        if len(self._server_list):
+            for s in sorted(self._server_list):
+                server_list.append(self._server_list[s])
+
+        return server_list
 
     def to_zip(self, pub_id, zip_callback = None, **ext_data):
         pub_node_id = self.get_pub_node_id(pub_id)

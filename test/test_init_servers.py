@@ -15,7 +15,7 @@ def test_init_servers(num, host = '127.0.0.1', port = 2181):
     try:
         node = '/test/server_list'
         if zookeeper.exists(node) is None:
-            zookeeper.create(node, json.dumps({'create_time' : time.time()}), makepath = True)
+            zookeeper.create(node, json.dumps({'update_time' : time.time()}), makepath = True)
     except kazoo.exceptions.NodeExistsError:
         pass
 
@@ -25,7 +25,7 @@ def test_init_servers(num, host = '127.0.0.1', port = 2181):
             node = '/test/server_list/s%s' % v
             if zookeeper.exists(node) is None:
                 zookeeper.create(node, json.dumps({
-                    'create_time' : time.time(),
+                    'update_time' : time.time(),
                     'server_name' : 's%s' % v,
                     'server_id'   : v,
                 }), makepath = True)

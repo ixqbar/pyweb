@@ -34,7 +34,7 @@ class mock_zip(object):
 
     def init(self):
         zip_node = '%s/to_zip_notice' % self._root_node
-        default_node_value = json.dumps({'create_time' : time.time()})
+        default_node_value = json.dumps({'update_time' : time.time()})
 
         try:
             if self._zookeeper.exists(zip_node) is None:
@@ -74,13 +74,13 @@ class mock_zip(object):
                 node_detail['finish_time'] = time.time()
                 self._zookeeper.set('%s/to_zip_notice/%s' % (self._root_node, zip_node_id, ), json.dumps(node_detail))
                 self._zookeeper.set('%s/to_zip_result/%s' % (self._root_node, zip_node_id, ), json.dumps({
-                    'create_time' : time.time(),
+                    'update_time' : time.time(),
                     'status'      : 'ok'
                 }))
             else:
                 LOG.info('zip node %s/to_zip_notice/%s zip failed' % (self._root_node, zip_node_id, ))
                 self._zookeeper.set('%s/to_zip_result/%s' % (self._root_node, zip_node_id, ), json.dumps({
-                    'create_time' : time.time(),
+                    'update_time' : time.time(),
                     'status'      : 'failed'
                 }))
 

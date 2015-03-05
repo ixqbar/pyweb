@@ -20,7 +20,7 @@ def test_pub_response(pub_node, server_list, host = '127.0.0.1', port = 2181):
             node = '/test/to_pub_result/%s/%s' % (pub_node, s, )
             if zookeeper.exists(node) is None:
                 zookeeper.create(node, json.dumps({
-                    'create_time' : time.time(),
+                    'update_time' : time.time(),
                     'status'      : 'ok'
                 }), makepath = True)
         except kazoo.exceptions.NodeExistsError:

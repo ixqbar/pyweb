@@ -36,7 +36,7 @@ class Publish(object):
             self._root_node + '/to_rol_result',
         ]
 
-        default_node_value = json.dumps({'create_time' : Tools.g_time()})
+        default_node_value = json.dumps({'update_time' : Tools.g_time()})
 
         try:
             for node in default_node:
@@ -60,7 +60,7 @@ class Publish(object):
     def init_server(self, server_node):
         server_detail = self._zookeeper.get('%s/server_list/%s' % (self._root_node, server_node, ))
         if 0 == len(server_detail[0]):
-            self._server_list[server_node] = {'server_id' : 0, 'server_name':'', 'create_time':0}
+            self._server_list[server_node] = {'server_id' : 0, 'server_name':'', 'update_time':0}
         else:
             self._server_list[server_node] = json.loads(server_detail[0])
 
@@ -82,7 +82,7 @@ class Publish(object):
 
         ext_data['pub_id']      = pub_id
         ext_data['pub_node_id'] = pub_node_id
-        ext_data['create_time'] = Tools.g_time()
+        ext_data['update_time'] = Tools.g_time()
 
         try:
             if self._zookeeper.exists(self._root_node + '/to_zip_notice/' + pub_node_id) is None:
@@ -129,7 +129,7 @@ class Publish(object):
 
         ext_data['pub_id']      = pub_id
         ext_data['pub_node_id'] = pub_node_id
-        ext_data['create_time'] = Tools.g_time()
+        ext_data['update_time'] = Tools.g_time()
         ext_data['servers']     = target_servers
 
         try:
@@ -153,16 +153,18 @@ class Publish(object):
 
         if self._to_syc_node.get(pub_node_id, None) is None:
             self._to_syc_node[pub_node_id] = {
-                'callback' : [syc_process_callback, syc_success_callback],
-                'servers'  : target_servers,
-                'notices'  : [],
-                'results'  : {}
+                'callback'    : [syc_process_callback, syc_success_callback],
+                'servers'     : target_servers,
+                'notices'     : [],
+                'results'     : {},
+                'update_time' : Tools.g_time()
             }
             self.syc_children_notice(pub_id, pub_node_id)
         else :
             self._to_syc_node[pub_node_id]['callback'] = [syc_process_callback, syc_success_callback]
             self._to_syc_node[pub_node_id]['servers']  = target_servers
             self._to_syc_node[pub_node_id]['results']  = {}
+            self._to_syc_node[pub_node_id]['time']     = Tools.g_time()
 
         return self
 
@@ -192,7 +194,7 @@ class Publish(object):
 
             syc_detail = json.loads(data)
             if isinstance(syc_detail, dict) == False or \
-                            syc_detail.get('create_time', None) is None or \
+                            syc_detail.get('update_time', None) is None or \
                             syc_detail.get('status', None) is None:
                 return
 
@@ -216,8 +218,17 @@ class Publish(object):
                 self._to_syc_node[pub_node_id]['callback'] = []
                 self._to_syc_node[pub_node_id]['results']  = {}
 
+                self._zookeeper.set('%s/to_syc_notice/%s' % (self._root_node, pub_node_id, ), json.dumps({
+                    'pub_id'      : pub_id,
+                    'pub_node_id' : pub_node_id,
+                    'update_time' : self._to_syc_node[pub_node_id]['update_time'],
+                    'servers'     : self._to_syc_node[pub_node_id]['servers'],
+                    'finish_time' : Tools.g_time(),
+                    'status'      : 'ok'
+                }))
+
                 self._zookeeper.set('%s/to_syc_result/%s' % (self._root_node, pub_node_id, ), json.dumps({
-                    'create_time' : Tools.g_time(),
+                    'update_time' : Tools.g_time(),
                     'status'      : 'ok'
                 }))
 
@@ -228,7 +239,7 @@ class Publish(object):
 
         ext_data['pub_id']      = pub_id
         ext_data['pub_node_id'] = pub_node_id
-        ext_data['create_time'] = Tools.g_time()
+        ext_data['update_time'] = Tools.g_time()
         ext_data['servers']     = target_servers
 
         try:
@@ -255,13 +266,15 @@ class Publish(object):
                 'callback' : [pub_process_callback, pub_success_callback],
                 'servers'  : target_servers,
                 'notices'  : [],
-                'results'  : {}
+                'results'  : {},
+                'time'     : Tools.g_time()
             }
             self.pub_children_notice(pub_id, pub_node_id)
         else :
             self._to_pub_node[pub_node_id]['callback'] = [pub_process_callback, pub_success_callback]
             self._to_pub_node[pub_node_id]['servers']  = target_servers
             self._to_pub_node[pub_node_id]['results']  = {}
+            self._to_pub_node[pub_node_id]['time']     = Tools.g_time()
 
         return self
 
@@ -291,7 +304,7 @@ class Publish(object):
 
             pub_detail = json.loads(data)
             if isinstance(pub_detail, dict) == False or \
-                            pub_detail.get('create_time', None) is None or \
+                            pub_detail.get('update_time', None) is None or \
                             pub_detail.get('status', None) is None:
                 return
 
@@ -315,8 +328,17 @@ class Publish(object):
                 self._to_pub_node[pub_node_id]['callback'] = []
                 self._to_pub_node[pub_node_id]['results']  = {}
 
+                self._zookeeper.set('%s/to_pub_notice/%s' % (self._root_node, pub_node_id, ), json.dumps({
+                    'pub_id'      : pub_id,
+                    'pub_node_id' : pub_node_id,
+                    'update_time' : self._to_syc_node[pub_node_id]['update_time'],
+                    'servers'     : self._to_syc_node[pub_node_id]['servers'],
+                    'finish_time' : Tools.g_time(),
+                    'status'      : 'ok'
+                }))
+
                 self._zookeeper.set('%s/to_pub_result/%s' % (self._root_node, pub_node_id, ), json.dumps({
-                    'create_time' : Tools.g_time(),
+                    'update_time' : Tools.g_time(),
                     'status'      : 'ok'
                 }))
 

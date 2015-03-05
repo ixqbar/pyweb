@@ -35,7 +35,7 @@ class mock_syc(object):
 
     def init(self):
         syc_node = '%s/to_syc_notice' % self._root_node
-        default_node_value = json.dumps({'create_time' : time.time()})
+        default_node_value = json.dumps({'update_time' : time.time()})
 
         try:
             if self._zookeeper.exists(syc_node) is None:
@@ -60,7 +60,7 @@ class mock_syc(object):
     def init_server(self, server_node):
         server_detail = self._zookeeper.get('%s/server_list/%s' % (self._root_node, server_node, ))
         if 0 == len(server_detail[0]):
-            self._server_list[server_node] = {'server_id' : 0, 'server_name':'', 'create_time':0}
+            self._server_list[server_node] = {'server_id' : 0, 'server_name':'', 'update_time' : 0}
         else:
             self._server_list[server_node] = json.loads(server_detail[0])
 
@@ -91,7 +91,7 @@ class mock_syc(object):
                     continue
 
                 node_value = {
-                    'create_time' : time.time()
+                    'update_time' : time.time()
                 }
 
                 if self.syc_execute(node_detail['config_version'], node_detail['game_version'], self._server_list[server_index]['server_id']) is True:

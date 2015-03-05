@@ -13,7 +13,7 @@ def test_zip_response(pub_node, host = '127.0.0.1', port = 2181):
 
     node_value = {
         'status'      : 'ok',
-        'create_time' : time.time(),
+        'update_time' : time.time(),
     }
 
     if zookeeper.exists('/test/to_zip_result/%s' % pub_node) is not None:

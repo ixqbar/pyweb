@@ -331,8 +331,8 @@ class Publish(object):
                 self._zookeeper.set('%s/to_pub_notice/%s' % (self._root_node, pub_node_id, ), json.dumps({
                     'pub_id'      : pub_id,
                     'pub_node_id' : pub_node_id,
-                    'update_time' : self._to_syc_node[pub_node_id]['update_time'],
-                    'servers'     : self._to_syc_node[pub_node_id]['servers'],
+                    'update_time' : self._to_pub_node[pub_node_id]['update_time'],
+                    'servers'     : self._to_pub_cnode[pub_node_id]['servers'],
                     'finish_time' : Tools.g_time(),
                     'status'      : 'ok'
                 }))

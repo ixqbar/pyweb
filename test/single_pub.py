@@ -97,8 +97,7 @@ class mock_pub(object):
                             node_detail.get('servers', None) is None:
                 return
 
-
-            if  0 == len(self._server_id) or \
+            if 0 == len(self._server_id) or \
                         str(self._server_id) not in node_detail['servers']:
                 return
 

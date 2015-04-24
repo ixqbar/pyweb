@@ -263,11 +263,11 @@ class Publish(object):
 
         if self._to_pub_node.get(pub_node_id, None) is None:
             self._to_pub_node[pub_node_id] = {
-                'callback' : [pub_process_callback, pub_success_callback],
-                'servers'  : target_servers,
-                'notices'  : [],
-                'results'  : {},
-                'time'     : Tools.g_time()
+                'callback'    : [pub_process_callback, pub_success_callback],
+                'servers'     : target_servers,
+                'notices'     : [],
+                'results'     : {},
+                'update_time' : Tools.g_time()
             }
             self.pub_children_notice(pub_id, pub_node_id)
         else :
@@ -332,7 +332,7 @@ class Publish(object):
                     'pub_id'      : pub_id,
                     'pub_node_id' : pub_node_id,
                     'update_time' : self._to_pub_node[pub_node_id]['update_time'],
-                    'servers'     : self._to_pub_cnode[pub_node_id]['servers'],
+                    'servers'     : self._to_pub_node[pub_node_id]['servers'],
                     'finish_time' : Tools.g_time(),
                     'status'      : 'ok'
                 }))

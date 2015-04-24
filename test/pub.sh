@@ -15,4 +15,4 @@ SERVER_ID=$3
 
 echo "got config_version=${CONFIG_VERSION} game_version=${GAME_VERSION} target_server=${SERVER_ID}"
 
-exit 1
+exit 0

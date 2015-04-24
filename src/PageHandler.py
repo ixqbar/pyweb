@@ -7,6 +7,7 @@ import logging
 import BaseHandler
 
 import R
+import pymongo
 
 LOG = logging.getLogger(__name__)
 
@@ -73,7 +74,7 @@ class PageHandler(BaseHandler.BaseHandler):
         page_num = 20
         skip_num = (page_val['page'] - 1) * page_num if page_val['page'] >= 1 else 1
 
-        mongo_col_cursor = self.application.get_mongo().get().use_collection(R.collection_publish).find()
+        mongo_col_cursor = self.application.get_mongo().get().use_collection(R.collection_publish).find(sort=[('_id',pymongo.DESCENDING)])
 
         page_val['total']      = mongo_col_cursor.count()
         page_val['total_page'] = page_val['total'] / page_num if page_val['total'] % page_num == 0 else 1 + page_val['total'] / page_num

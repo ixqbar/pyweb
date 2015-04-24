@@ -65,7 +65,8 @@ class mock_zip(object):
             node_detail = json.loads(data)
             if node_detail.get('config_version', None) is None or \
                     node_detail.get('game_version', None) is None or \
-                    node_detail.get('status', None) == 'ok':
+                    node_detail.get('status', None) == 'ok' or  \
+                    node_detail.get('status', None) == 'failed':
                 return
 
             if self.zip_execute(node_detail['config_version'], node_detail['game_version']) is True:

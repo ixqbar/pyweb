@@ -80,6 +80,7 @@ class mock_syc(object):
 
             node_detail = json.loads(data)
             if node_detail.get('status', None) == 'ok' or \
+                            node_detail.get('status', None) == 'failed' or \
                             node_detail.get('servers', None) is None:
                 return
 

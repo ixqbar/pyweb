@@ -24,10 +24,12 @@ class mock_pub(object):
     _root_node   = ''
     _server_list = {}
     _zookeeper   = None
+    _shell_path  = ''
 
-    def __init__(self, host = '127.0.0.1', port = 2181, root_node = '/test'):
-        self._zookeeper = KazooClient('%s:%s' % (host, port,))
-        self._root_node = root_node
+    def __init__(self, host = '127.0.0.1', port = 2181, root_node = '/test', shell_path = './'):
+        self._zookeeper  = KazooClient('%s:%s' % (host, port,))
+        self._root_node  = root_node
+        self._shell_path = shell_path
 
     def run(self):
         self._zookeeper.start()
@@ -123,8 +125,8 @@ class mock_pub(object):
         to execute shell to zip resource
         '''
 
-        LOG.info('start to execute shell to pub for server_id=%s config_version=%s game_version=%s' % (server_id, config_version, game_version, ))
-        result = subprocess.call(os.path.join(os.getcwd(), 'pub.sh %s %s %s > /dev/null 2>&1' % (config_version, game_version, server_id, )), shell = True)
+        LOG.info('start to execute shell %s/pub.sh %s %s %s' % (self._shell_path, config_version, game_version, server_id, ))
+        result = subprocess.call('%s/pub.sh %s %s %s > /dev/null 2>&1' % (self._shell_path, config_version, game_version, server_id, ), shell = True)
 
         return True if result == 0 else False
 
@@ -132,7 +134,12 @@ if __name__ == '__main__':
     os.environ['TZ'] = 'Asia/Shanghai'
     time.tzset()
 
-    m = mock_pub(sys.argv[1] if len(sys.argv) >= 2 else '127.0.0.1', sys.argv[2] if len(sys.argv) >= 3 else '2181')
+    m = mock_pub(
+        sys.argv[1] if len(sys.argv) >= 2 else '127.0.0.1',
+        sys.argv[2] if len(sys.argv) >= 3 else '2181',
+        sys.argv[2] if len(sys.argv) >= 4 else '/test',
+        os.path.realpath(os.getcwd())
+    )
     m.run()
 
     try:

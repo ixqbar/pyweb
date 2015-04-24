@@ -103,8 +103,8 @@ if __name__ == '__main__':
     m = mock_zip(
         sys.argv[1] if len(sys.argv) >= 2 else '127.0.0.1',
         sys.argv[2] if len(sys.argv) >= 3 else '2181',
-        sys.argv[2] if len(sys.argv) >= 4 else '/test',
-        os.path.realpath(os.getcwd())
+        sys.argv[3] if len(sys.argv) >= 4 else '/test',
+        os.path.dirname(sys.argv[0])
     )
     m.run()
 

@@ -92,8 +92,6 @@ class mock_pub(object):
             if 0 == len(data):
                 return
 
-            LOG.info('watch_pub execute %s/to_pub_notice/%s %s' % (self._root_node, pub_node_id, data, ))
-
             node_detail = json.loads(data)
             if node_detail.get('status', None) == 'ok' or \
                             node_detail.get('status', None) == 'failed' or \
@@ -103,6 +101,8 @@ class mock_pub(object):
             if 0 == len(self._server_id) or \
                         str(self._server_id) not in node_detail['servers']:
                 return
+
+            LOG.info('watch_pub execute %s/to_pub_notice/%s %s' % (self._root_node, pub_node_id, data, ))
 
             node_value = {
                 'update_time' : time.time()

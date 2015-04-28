@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#coding=utf-8
 
 import os
 import sys
@@ -70,6 +71,10 @@ class Application(tornado.web.Application):
         return self._publish
 
 if __name__ == '__main__':
+    #fixed codec can’t encode
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
+
     try:
         os.environ['TZ'] = 'Asia/Shanghai'
         time.tzset()

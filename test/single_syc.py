@@ -23,7 +23,6 @@ class mock_syc(object):
 
     _server_id   = ''
     _root_node   = ''
-    _server_list = {}
     _zookeeper   = None
     _shell_path  = ''
 
@@ -46,12 +45,6 @@ class mock_syc(object):
         except kazoo.exceptions.NodeExistsError:
             pass
 
-        @self._zookeeper.ChildrenWatch('%s/server_list' % (self._root_node, ))
-        def server(server_list):
-            for server_node in server_list:
-                result = self.init_server(server_node)
-                LOG.info('refresh server list %s' % json.dumps(result))
-
         @self._zookeeper.ChildrenWatch('%s/to_syc_notice' % (self._root_node, ))
         def to_syc_node(syc_node_list):
             for syc_node_id in syc_node_list:
@@ -59,15 +52,6 @@ class mock_syc(object):
                 self.to_syc(syc_node_id)
 
         return self
-
-    def init_server(self, server_node):
-        server_detail = self._zookeeper.get('%s/server_list/%s' % (self._root_node, server_node, ))
-        if 0 == len(server_detail[0]):
-            self._server_list[server_node] = {'server_id' : 0, 'server_name':'', 'update_time' : 0}
-        else:
-            self._server_list[server_node] = json.loads(server_detail[0])
-
-        return self._server_list[server_node]
 
     def to_syc(self, syc_node_id):
 

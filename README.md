@@ -17,6 +17,10 @@ snapshoot
 {node}/to_zip_notice/v1  {"update_time":x,"pub_id":x,"pub_node_id":x,"config_version":x,"game_version":x,"status":"ok","finish_time":x}
 {node}/to_zip_result/v1  {"update_time":x,"status":"ok"}
 ```
+* svn导出脚本可以参考[http://xingqiba.sinaapp.com/?p=846](http://xingqiba.sinaapp.com/?p=846)
+  
+![](http://xingqiba-wordpress.stor.sinaapp.com/uploads/2012/09/svn_export_patch.png)
+
 
 ##Step 2 同步
 ```

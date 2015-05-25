@@ -241,9 +241,7 @@ App.sycBind = function() {
 
         _this.pub_data.pub_servers.length = []
         $("input[type='checkbox']:checked").each(function() {
-            if (parseInt($(this).val()) > 0) {
-                _this.pub_data.pub_servers.push($(this).val());
-            }
+            _this.pub_data.pub_servers.push($(this).val());
         });
 
         _this.debug(_this.pub_data.pub_servers);

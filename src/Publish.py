@@ -63,10 +63,10 @@ class Publish(object):
             tmp_server_detail = json.loads(server_detail[0])
             if tmp_server_detail['update_time'] + 10 > now_timestamp:
                 self._server_list[server_node] = tmp_server_detail
-            else:
+            elif self._server_list.get(server_node, None) is not None:
                 del self._server_list[server_node]
 
-        return self._server_list[server_node]
+        return self._server_list[server_node] if self._server_list.get(server_node, None) is not None else []
 
     def get_pub_node_id(self, pub_id):
         return 'v%s' % pub_id

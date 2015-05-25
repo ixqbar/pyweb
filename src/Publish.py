@@ -74,9 +74,10 @@ class Publish(object):
 
     def get_server_list(self):
         server_list = []
-        if len(self._server_list):
+        server_node = self._zookeeper.get_children('/test/server_list/')
+        if len(server_node):
             now_timestamp = time.time()
-            for s in sorted(self._server_list):
+            for s in sorted(server_node):
                 if self.init_server(s, now_timestamp) is not None:
                     server_list.append(self._server_list[s])
 

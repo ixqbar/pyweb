@@ -87,6 +87,7 @@ class mock_pub(object):
                     'server_id'   : self._server_id,
                 }))
         except kazoo.exceptions.NodeExistsError:
+            LOG.error('update server list node error')
             pass
 
     def to_pub(self, pub_node_id):

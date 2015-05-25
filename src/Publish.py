@@ -53,7 +53,8 @@ class Publish(object):
             now_timestamp = time.time()
             for server_node in server_list:
                 result = self.init_server(server_node, now_timestamp)
-                LOG.info('refresh server list %s' % json.dumps(result))
+                if result is not None:
+                    LOG.info('refresh server list %s' % json.dumps(result))
 
         return self
 
@@ -66,7 +67,7 @@ class Publish(object):
             elif self._server_list.get(server_node, None) is not None:
                 del self._server_list[server_node]
 
-        return self._server_list[server_node] if self._server_list.get(server_node, None) is not None else []
+        return self._server_list.get(server_node, None)
 
     def get_pub_node_id(self, pub_id):
         return 'v%s' % pub_id
@@ -74,8 +75,10 @@ class Publish(object):
     def get_server_list(self):
         server_list = []
         if len(self._server_list):
+            now_timestamp = time.time()
             for s in sorted(self._server_list):
-                server_list.append(self._server_list[s])
+                if self.init_server(s, now_timestamp) is not None:
+                    server_list.append(self._server_list[s])
 
         return server_list
 

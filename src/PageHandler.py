@@ -63,9 +63,8 @@ class PageHandler(BaseHandler.BaseHandler):
         pub_id = self.get_argument('id', 0)
         if pub_id > 0:
             self.application.get_mongo().get().use_collection(R.collection_publish).update({
-                R.mongo_id   : int(pub_id),
-                R.pub_status : 'deprecated'
-            }, {'$set' : {R.pub_status : 'pub_success'}})
+                R.mongo_id   : int(pub_id)
+            }, {'$set' : {R.pub_status : 'deprecated'}})
 
             return self.history()
         else:

@@ -44,21 +44,7 @@ class Publish(object):
         except kazoo.exceptions.NodeExistsError:
             pass
 
-        self.init()
-
-    def init(self):
-
-        @self._zookeeper.ChildrenWatch('%s/server_list' % (self._root_node, ))
-        def server(server_list):
-            now_timestamp = time.time()
-            for server_node in server_list:
-                result = self.init_server(server_node, now_timestamp)
-                if result is not None:
-                    LOG.info('refresh server list %s' % json.dumps(result))
-
-        return self
-
-    def init_server(self, server_node, now_timestamp):
+    def server(self, server_node, now_timestamp):
         server_detail = self._zookeeper.get('%s/server_list/%s' % (self._root_node, server_node, ))
         if 0 != len(server_detail[0]):
             tmp_server_detail = json.loads(server_detail[0])
@@ -78,7 +64,7 @@ class Publish(object):
         if len(server_node):
             now_timestamp = time.time()
             for s in sorted(server_node):
-                if self.init_server(s, now_timestamp) is not None:
+                if self.server(s, now_timestamp) is not None:
                     server_list.append(self._server_list[s])
 
         return server_list

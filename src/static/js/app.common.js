@@ -101,7 +101,7 @@ App.loadServers = function() {
 App.loadServersExecutor = function(servers) {
     this.debug(servers);
     this.servers = servers;
-    var _html = ['<input type="checkbox" id="servers_all" value="0" /> ALL<br/>'];
+    var _html = ['<input type="checkbox" id="servers_all" value="" /> ALL<br/>'];
     for (var i in servers) {
         if ($.inArray(servers[i].server_id + '', this.pub_data.pub_servers) >= 0) {
             _html.push('<input type="checkbox" value="' + servers[i].server_id + '" checked/>' + servers[i].server_name)
@@ -241,7 +241,9 @@ App.sycBind = function() {
 
         _this.pub_data.pub_servers.length = []
         $("input[type='checkbox']:checked").each(function() {
-            _this.pub_data.pub_servers.push($(this).val());
+            if ($(this).val()) {
+                _this.pub_data.pub_servers.push($(this).val());
+            }
         });
 
         _this.debug(_this.pub_data.pub_servers);

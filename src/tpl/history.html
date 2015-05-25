@@ -35,8 +35,11 @@
                     <td>{{ pub_item['status'] }}</td>
                     <td>{{ pub_item['pub_time'] }}</td>
                     <td>
+                        {% if pub_item['status'] != 'deprecated' %}
                         {% if pub_item['status'] != 'pub_success' %}
                         <a href="/page?action=publish&id={{ pub_item['id'] }}" class="btn btn-info">publish</a>
+                        <a href="/page?action=deprecated&id={{ pub_item['id'] }}" class="btn btn-info" onclick="return confirm('Deprecated ?')">deprecated</a>
+                        {% end %}
                         {% end %}
                     </td>
                 </tr>

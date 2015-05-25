@@ -71,6 +71,7 @@ class mock_pub(object):
         except kazoo.exceptions.NodeExistsError:
             pass
 
+    def update_server(self):
         try:
             node = '/test/server_list/s%s' % self._server_id
             if self._zookeeper.exists(node) is None:
@@ -79,6 +80,12 @@ class mock_pub(object):
                     'server_name' : 's%s' % self._server_id,
                     'server_id'   : self._server_id,
                 }), makepath = True)
+            else:
+                self._zookeeper.set(node, json.dumps({
+                    'update_time' : time.time(),
+                    'server_name' : 's%s' % self._server_id,
+                    'server_id'   : self._server_id,
+                }))
         except kazoo.exceptions.NodeExistsError:
             pass
 
@@ -151,6 +158,7 @@ if __name__ == '__main__':
 
     try:
         while True:
-            time.sleep(1)
+            m.update_server()
+            time.sleep(3)
     except KeyboardInterrupt:
         pass

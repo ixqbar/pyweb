@@ -1,6 +1,6 @@
 import json
 import logging
-
+import time
 import Tools
 
 import kazoo
@@ -50,18 +50,21 @@ class Publish(object):
 
         @self._zookeeper.ChildrenWatch('%s/server_list' % (self._root_node, ))
         def server(server_list):
+            now_timestamp = time.time()
             for server_node in server_list:
-                result = self.init_server(server_node)
+                result = self.init_server(server_node, now_timestamp)
                 LOG.info('refresh server list %s' % json.dumps(result))
 
         return self
 
-    def init_server(self, server_node):
+    def init_server(self, server_node, now_timestamp):
         server_detail = self._zookeeper.get('%s/server_list/%s' % (self._root_node, server_node, ))
-        if 0 == len(server_detail[0]):
-            self._server_list[server_node] = {'server_id' : 0, 'server_name':'', 'update_time':0}
-        else:
-            self._server_list[server_node] = json.loads(server_detail[0])
+        if 0 != len(server_detail[0]):
+            tmp_server_detail = json.loads(server_detail[0])
+            if tmp_server_detail['update_time'] + 10 > now_timestamp:
+                self._server_list[server_node] = tmp_server_detail
+            else:
+                del self._server_list[server_node]
 
         return self._server_list[server_node]
 

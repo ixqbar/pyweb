@@ -335,3 +335,24 @@ class Publish(object):
                 }))
 
         return self
+
+    def deprecated(self, pub_id):
+        pub_node_id = self.get_pub_node_id(pub_id)
+        self._zookeeper.set('%s/to_syc_notice/%s' % (self._root_node, pub_node_id, ), json.dumps({
+            'pub_id'      : pub_id,
+            'pub_node_id' : pub_node_id,
+            'update_time' : Tools.g_time(),
+            'servers'     : [],
+            'finish_time' : Tools.g_time(),
+            'status'      : 'deprecated'
+        }))
+
+        self._zookeeper.set('%s/to_pub_notice/%s' % (self._root_node, pub_node_id, ), json.dumps({
+            'pub_id'      : pub_id,
+            'pub_node_id' : pub_node_id,
+            'update_time' : Tools.g_time(),
+            'servers'     : [],
+            'finish_time' : Tools.g_time(),
+            'status'      : 'deprecated'
+        }))
+

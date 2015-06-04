@@ -66,6 +66,9 @@ class PageHandler(BaseHandler.BaseHandler):
                 R.mongo_id   : int(pub_id)
             }, {'$set' : {R.pub_status : 'deprecated'}})
 
+            #deprecated
+            self.application.get_publish().deprecated(pub_id)
+
             return self.history()
         else:
             page_val = {
